@@ -1,26 +1,23 @@
 ## Money Manager Server
 
-A small Go backend for the Money Manager project. The server loads environment variables, connects to PostgreSQL with `pgx`, and exposes a health check endpoint.
+A minimal Go backend for the Money Manager project. The server loads environment variables, connects to PostgreSQL using `pgx`, and exposes a small HTTP API used during development.
 
 ## Project Overview
 
-Current features:
+Key points:
 
-- Go module-based project structure
-- HTTP server running on port `8000`
-- Environment variable loading with `godotenv`
-- PostgreSQL connection through `pgxpool`
-- API routing under `/api/v1`
-- Health check endpoint for basic server verification
+- Module-based Go project
+- HTTP server listens on port `8000`
+- Loads `.env` with `godotenv`
+- Connects to PostgreSQL with a `pgxpool` connection pool
+- Routes are registered under `/api/v1`
+- Provides a health check endpoint
 
 ## Last Completed Work
 
-The last work completed in this repository was:
-
-- Added the application entry point in `main.go`
-- Wired environment loading and database connection startup
-- Registered the API route group
-- Added a health check handler at `/api/v1/health`
+- Implemented `main.go` to load environment and connect DB
+- Added `internal/database` with `pgxpool` connection
+- Created routing and a health check handler at `/api/v1/health`
 
 ## Project Structure
 
@@ -29,57 +26,59 @@ go.mod
 main.go
 README.md
 internal/
- database/
-  database.go
- handlers/
-  health.handaler.go
- routes/
-  routes.go
+  database/
+    database.go
+  handlers/
+    health.handaler.go
+  routes/
+    routes.go
 ```
 
-## Setup
+## Getting Started
 
 ### Requirements
 
-- Go installed locally
+- Go (1.20+ recommended)
 - PostgreSQL database
-- `.env` file with `DATABASE_URL`
 
-### Environment Variables
+### Environment
 
-Create a `.env` file in the project root:
+Create a `.env` file in the repository root with at least:
 
 ```env
 DATABASE_URL=postgres://user:password@localhost:5432/money_manager?sslmode=disable
 ```
 
-### Install Dependencies
+### Install dependencies
 
 ```bash
 go mod tidy
 ```
 
-## Run the Server
+### Run locally
 
 ```bash
 go run main.go
 ```
 
-The server starts on `http://localhost:8000`.
+Server will be reachable at `http://localhost:8000`.
 
-## API Endpoints
+## API
 
 ### Health Check
 
-- `GET /api/v1/health`
+- Endpoint: `GET /api/v1/health`
+- Response body: `Api is healthy` (plain text)
 
-Response:
+## Troubleshooting
 
-```text
-Api is healthy
-```
+- If the server exits with a DB connection error, confirm `DATABASE_URL` and that Postgres is reachable.
+- Missing `.env` will cause `godotenv.Load()` to return an error; ensure `.env` exists when running locally.
 
-## Notes
+## Contributing
 
-- The database connection is established during startup.
-- If `DATABASE_URL` is missing or invalid, the server will stop on launch.
+Small project — feel free to open issues or PRs. For changes affecting DB behavior, add clear setup steps in the README.
+
+## License
+
+This repository has no license specified. Add a `LICENSE` file if you want to share it publicly.

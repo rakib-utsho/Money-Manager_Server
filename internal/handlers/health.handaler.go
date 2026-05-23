@@ -1,10 +1,17 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
+
+	"money-manager-server/internal/utils"
 )
 
 func HealthChecker(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Api is healthy")
+	utils.WriteJSON(
+		w,
+		http.StatusOK,
+		true,
+		"Api is Healthy",
+		nil,
+	)
 }
