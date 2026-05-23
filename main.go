@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 
 	Database "money-manager-server/internal/database"
+	"money-manager-server/internal/routes"
 )
 
 func main() {
@@ -23,9 +24,7 @@ func main() {
 		log.Fatal("Database connection failed", err)
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Money Manager API Running")
-	})
+	routes.RegisterRoutes()
 
 	fmt.Println("Server running on :8000")
 
