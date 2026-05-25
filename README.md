@@ -1,23 +1,14 @@
 ## Money Manager Server
 
-A minimal Go backend for the Money Manager project. The server loads environment variables, connects to PostgreSQL using `pgx`, and exposes a small HTTP API used during development.
+A small Go backend for the Money Manager project. It loads environment variables, connects to PostgreSQL through `pgxpool`, and exposes a basic HTTP API under `/api/v1`.
 
-## Project Overview
+## Features
 
-Key points:
-
-- Module-based Go project
-- HTTP server listens on port `8000`
-- Loads `.env` with `godotenv`
-- Connects to PostgreSQL with a `pgxpool` connection pool
-- Routes are registered under `/api/v1`
-- Provides a health check endpoint
-
-## Last Completed Work
-
-- Implemented `main.go` to load environment and connect DB
-- Added `internal/database` with `pgxpool` connection
-- Created routing and a health check handler at `/api/v1/health`
+- HTTP server on port `8000`
+- Environment loading with `godotenv`
+- PostgreSQL connection via `pgxpool`
+- JSON API responses
+- Health check and user registration routes
 
 ## Project Structure
 
@@ -29,56 +20,66 @@ internal/
   database/
     database.go
   handlers/
-    health.handaler.go
+    health.handler.go
+    user.handler.go
+  models/
+    user.model.go
   routes/
     routes.go
+  utils/
+    json.go
 ```
 
-## Getting Started
+## Requirements
 
-### Requirements
-
-- Go (1.20+ recommended)
+- Go 1.26 or newer
 - PostgreSQL database
 
-### Environment
+## Environment
 
-Create a `.env` file in the repository root with at least:
+Create a `.env` file in the repository root with:
 
 ```env
 DATABASE_URL=postgres://user:password@localhost:5432/money_manager?sslmode=disable
 ```
 
-### Install dependencies
+## Install
 
 ```bash
 go mod tidy
 ```
 
-### Run locally
+## Run
 
 ```bash
 go run main.go
 ```
 
-Server will be reachable at `http://localhost:8000`.
+The server listens on `http://localhost:8000`.
 
-## API
+## API Endpoints
 
 ### Health Check
 
-- Endpoint: `GET /api/v1/health`
-- Response body: `Api is healthy` (plain text)
+- `GET /api/v1/health`
+- Returns a JSON response with `success`, `message`, and optional `data`
 
-## Troubleshooting
+### Register User
 
-- If the server exits with a DB connection error, confirm `DATABASE_URL` and that Postgres is reachable.
-- Missing `.env` will cause `godotenv.Load()` to return an error; ensure `.env` exists when running locally.
+- `POST /api/v1/users/register`
+- Request body:
 
-## Contributing
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "secret"
+}
+```
 
-Small project — feel free to open issues or PRs. For changes affecting DB behavior, add clear setup steps in the README.
+- Returns the created user record with `id`, `created_at`, and `updated_at`
 
-## License
+## Notes
 
-This repository has no license specified. Add a `LICENSE` file if you want to share it publicly.
+- The app exits if `.env` cannot be loaded.
+- The database connection must succeed before the server starts.

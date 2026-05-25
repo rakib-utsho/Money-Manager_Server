@@ -7,8 +7,9 @@ import (
 
 	"github.com/joho/godotenv"
 
-	Database "money-manager-server/internal/database"
+	"money-manager-server/internal/database"
 	"money-manager-server/internal/routes"
+
 )
 
 func main() {
@@ -18,13 +19,14 @@ func main() {
 		log.Fatal("Error loading .env file", err)
 	}
 
-	err = Database.ConnectDB()
+	err = database.ConnectDB()
 
 	if err != nil {
 		log.Fatal("Database connection failed", err)
 	}
 
 	routes.RegisterRoutes()
+
 
 	fmt.Println("Server running on :8000")
 
