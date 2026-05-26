@@ -6,29 +6,29 @@ import (
 	"net/http"
 
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 
-	"money-manager-server/internal/database"
-	"money-manager-server/internal/routes"
-
+	"money-manager-server/config"
 )
 
 func main() {
-	err := godotenv.Load()
 
-	if err != nil {
-		log.Fatal("Error loading .env file", err)
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
 	}
 
-	err = database.ConnectDB()
+	config.ConnectDB()
 
-	if err != nil {
-		log.Fatal("Database connection failed", err)
-	}
+	// Tell the router: when someone visits "/", run this function
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// w = where you write your response back to the client
+		// r = the incoming request (method, headers, body, etc.)
+		fmt.Fprintln(w, "Money Manager API is running!")
+	})
 
-	routes.RegisterRoutes()
+	// Start the server on port 8080
+	// This line BLOCKS — it runs forever, listening for requests
+	log.Println("Server Starting on port 8080....")
 
-
-	fmt.Println("Server running on :8000")
-
-	http.ListenAndServe(":8000", nil)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
