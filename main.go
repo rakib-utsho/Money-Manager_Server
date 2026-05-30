@@ -6,17 +6,19 @@ import (
 	"net/http"
 
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
+	_ "github.com/lib/pq" // registers postgres driver, we don't call it directly
 
 	"money-manager-server/config"
 )
 
 func main() {
 
+	// load .env file into environment variables
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	// connect to database
 	config.ConnectDB()
 
 	// Tell the router: when someone visits "/", run this function

@@ -1,3 +1,34 @@
+# Money Manager Server
+
+Simple backend API for managing personal finances and investments.
+
+Prerequisites
+- Go 1.26 or later
+
+Quick start
+1. Copy or create a `.env` with your database settings (see `config/db.go`).
+2. Fetch dependencies:
+
+```bash
+go mod download
+```
+
+3. Run the server:
+
+```bash
+go run main.go
+```
+
+Project layout
+- `main.go` — application entrypoint
+- `config/` — database and configuration helpers
+- `models/` — domain models (User, Transaction, Investment)
+- `handlers/` — HTTP handlers
+- `repository/`, `services/`, `router/` — application layers
+
+Notes
+- The project uses the `pgx`/`pq` Postgres drivers; update `config/db.go` to point at your database.
+- Models include JSON tags for API responses; adjust DB tags as needed for your chosen data access library.
 ## Money Manager Server
 
 A robust Go backend for the Money Manager project. It loads environment variables, connects to PostgreSQL, and exposes a structured HTTP API. The project follows a clean architecture pattern with defined layers for handlers, services, and repositories.
