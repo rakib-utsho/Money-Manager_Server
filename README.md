@@ -1,71 +1,22 @@
 # Money Manager Server
 
-Simple backend API for managing personal finances and investments.
-
-Prerequisites
-- Go 1.26 or later
-
-Quick start
-1. Copy or create a `.env` with your database settings (see `config/db.go`).
-2. Fetch dependencies:
-
-```bash
-go mod download
-```
-
-3. Run the server:
-
-```bash
-go run main.go
-```
-
-Project layout
-- `main.go` — application entrypoint
-- `config/` — database and configuration helpers
-- `models/` — domain models (User, Transaction, Investment)
-- `handlers/` — HTTP handlers
-- `repository/`, `services/`, `router/` — application layers
-
-Notes
-- The project uses the `pgx`/`pq` Postgres drivers; update `config/db.go` to point at your database.
-- Models include JSON tags for API responses; adjust DB tags as needed for your chosen data access library.
-## Money Manager Server
-
-A robust Go backend for the Money Manager project. It loads environment variables, connects to PostgreSQL, and exposes a structured HTTP API. The project follows a clean architecture pattern with defined layers for handlers, services, and repositories.
-
-## Features
-
-- RESTful HTTP server
-- Environment variable configuration
-- PostgreSQL database integration
-- Clean architecture (Handlers, Services, Repositories)
-- Middleware support
-- Centralized routing
-
-## Project Structure
-
-```text
-money-manager-server/
-├── config/        # Database and application configuration
-├── handlers/      # HTTP request handlers (Controllers)
-├── middleware/    # HTTP middleware (Logging, Auth, etc.)
-├── models/        # Application data structures and DB schemas
-├── repository/    # Database queries and data access layer
-├── router/        # Centralized HTTP route definitions
-├── services/      # Business logic layer
-├── main.go        # Application entry point
-├── go.mod         # Go module dependencies
-└── README.md      # Project documentation
-```
+Money Manager Server is a Go backend for a personal finance app. The current codebase boots an HTTP server, loads environment variables from `.env`, connects to PostgreSQL, and exposes a simple root endpoint to confirm the API is running.
 
 ## Requirements
 
-- Go 1.20 or newer
+- Go 1.26.2 or newer
 - PostgreSQL database
 
-## Environment Setup
+## Current Behavior
 
-Create a `.env` file in the repository root containing your database credentials and connection string:
+- Loads environment variables with `godotenv`
+- Opens a PostgreSQL connection through `config.ConnectDB()`
+- Serves `GET /` with the response `Money Manager API is running!`
+- Uses a shared database handle in `config.DB`
+
+## Environment Variables
+
+Create a `.env` file in the project root with the database credentials used by `config/db.go`:
 
 ```env
 DB_HOST=localhost
@@ -73,37 +24,40 @@ DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=yourpassword
 DB_NAME=money_manager
-
-DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/money_manager
 ```
 
-## Installation
-
-Install all required dependencies:
+## Install
 
 ```bash
 go mod tidy
 ```
 
-## Running the Application
-
-To start the server, run:
+## Run
 
 ```bash
 go run main.go
 ```
 
-The server will initialize the database connection and start listening for incoming requests.
+The server listens on port `8080`.
 
-## Architecture
+## Project Layout
 
-This project strictly adheres to a layered architecture to ensure separation of concerns, scalability, and maintainability:
+- `main.go` - application entry point and HTTP bootstrap
+- `config/` - database connection setup
+- `models/` - data models for users, transactions, and investments
+- `repository/` - database access helpers
+- `handlers/`, `services/`, `router/`, `middleware/` - reserved for future API layers
 
-1. **Router Layer (`/router`)**: Intercepts incoming requests and routes them to the appropriate handlers.
-2. **Handler Layer (`/handlers`)**: Handles HTTP requests and responses. Parses payloads and validates inputs before calling the service layer.
-3. **Service Layer (`/services`)**: Contains the core business logic of the application.
-4. **Repository Layer (`/repository`)**: Interacts directly with the database to perform CRUD operations.
-5. **Models Layer (`/models`)**: Defines the data structures used across the application.
-6. **Middleware Layer (`/middleware`)**: Handles cross-cutting concerns like authentication, CORS, and request logging.
-7. **Config Layer (`/config`)**: Manages the application configuration and database connection pooling.
+## Data Models
+
+The repository currently defines models for:
+
+- `User`
+- `Transaction`
+- `Investment`
+
+## Notes
+
+- The repository layer currently includes user database helpers in `repository/user.repo.go`.
+- If you add API routes, document them here so the README stays aligned with the code.
 
