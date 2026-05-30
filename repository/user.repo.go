@@ -28,7 +28,7 @@ func (r *UserRepository) CreateUser(user *models.User) error {
 func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	query := `
 	SELECT id, name, email, password, created_at
-	FORM users
+	FROM users
 	WHERE email = $1
 	`
 	user := &models.User{}
