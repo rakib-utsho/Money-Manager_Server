@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"money-manager-server/services"
+
 )
 
 type AuthHandler struct {
@@ -81,8 +82,10 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
-		"token": token,
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"token": token.Token,
+		"data":  token.User,
 	})
 
 }
+

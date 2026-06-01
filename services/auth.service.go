@@ -2,17 +2,29 @@ package services
 
 import (
 	"errors"
-	"money-manager-server/models"
-	"money-manager-server/repository"
 	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
+
+	"money-manager-server/models"
+	"money-manager-server/repository"
 )
 
 type AuthService struct {
 	UserRepo *repository.UserRepository
+}
+
+type LoginResponse struct {
+	Token string       `json:"token"`
+	User  UserResponse `json:"user"`
+}
+
+type UserResponse struct {
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 // Register hashes the password then saves the user
@@ -50,31 +62,38 @@ func (s *AuthService) Register(name, email, password string) (*models.User, erro
 }
 
 // Login verifies credentials and returns a JWT token
-func (s *AuthService) Login(email, password string) (string, error) {
+func (s *AuthService) Login(email, password string) (*LoginResponse, error) {
 
 	// fetch user from database
 	user, err := s.UserRepo.GetUserByEmail(email)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if user == nil {
-		return "", errors.New("invalid email or password")
+		return nil, errors.New("invalid email or password")
 	}
 
 	// CompareHashAndPassword checks if the plain password matches the hash
 	// returns error if they don't match
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return "", errors.New("invalid email or password")
+		return nil, errors.New("invalid email or password")
 	}
 
 	// generate JWT token
 	token, err := generateJWT(user.ID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return token, nil
+	return &LoginResponse{
+		Token: token,
+		User: UserResponse{
+			ID:    int64(user.ID),
+			Name:  user.Name,
+			Email: user.Email,
+		},
+	}, nil
 }
 
 // generateJWT creates a signed token containing the user's ID
